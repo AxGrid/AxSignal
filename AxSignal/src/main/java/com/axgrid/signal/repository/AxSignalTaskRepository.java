@@ -33,8 +33,8 @@ public class AxSignalTaskRepository {
                 task.getDoneTime(), task.getCreateTime(), task.getStatus().getValue(), task.getChannel(), task.getTrx());
     }
 
-    public List<AxSignalTask> getAllUnWorked() {
-        return jdbcTemplate.query("SELECT * FROM ax_signal WHERE status=1 ORDER BY create_time LIMIT 500", new AxSignalTask.Mapper());
+    public List<AxSignalTask> getAllTask() {
+        return jdbcTemplate.query("SELECT * FROM ax_signal WHERE status=1 AND create_time<? ORDER BY create_time LIMIT 500", new AxSignalTask.Mapper(), new Date());
     }
 
     public AxSignalTask getTaskStatus(String channel, String trx) {

@@ -1,5 +1,6 @@
 package com.axgrid.signal.service;
 
+import com.axgrid.signal.ISignalService;
 import com.axgrid.signal.dto.AxSignalQueueStatus;
 import com.axgrid.signal.dto.AxSignalStatus;
 import com.axgrid.signal.dto.AxSignalTask;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class AxSignalExecutorService implements HealthIndicator {
+public class AxSignalExecutorService implements ISignalService, HealthIndicator {
 
     @Autowired
     AxSignalTaskRepository repository;
@@ -41,7 +42,7 @@ public class AxSignalExecutorService implements HealthIndicator {
     @Scheduled(fixedDelay = 400)
     public void execute() {
         if (listeners == null) return;
-        var unworkedList = repository.getAllUnWorked();
+        var unworkedList = repository.getAllTask();
         if (log.isTraceEnabled() && unworkedList.size() > 0) log.trace("Found {} tasks", unworkedList.size());
         boolean errors = false;
         for(AxSignalTask task : unworkedList) {
@@ -90,10 +91,13 @@ public class AxSignalExecutorService implements HealthIndicator {
         this.add(channel, UUID.randomUUID().toString(), taskObject);
     }
 
-    public void add(String channel, String uuid, Object taskObject) {
+    public void add(String channel, String uuid, Object taskObject) { this.add(channel, uuid, taskObject, new Date()); }
+
+    @Override
+    public void add(String channel, String uuid, Object taskObject, Date date) {
         var task = new AxSignalTask();
         task.setChannel(channel);
-        task.setCreateTime(new Date());
+        task.setCreateTime(date);
         task.setTrx(uuid);
         task.setMessage(taskObject);
         this.add(task);
@@ -101,7 +105,6 @@ public class AxSignalExecutorService implements HealthIndicator {
 
     @Override
     public Health health() {
-
         var unworked = repository.getAllUnworked();
         var errors = repository.getAllErrors();
         Map<String, Object> detail = new HashMap<>();
