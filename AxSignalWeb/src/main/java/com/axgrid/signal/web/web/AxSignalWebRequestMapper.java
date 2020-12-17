@@ -30,9 +30,9 @@ public class AxSignalWebRequestMapper {
 
     @RequestMapping("/")
     public ResponseEntity<List<AxSignalTaskDTO>> getAll(
-            @RequestParam(value = "filter", required = false) String filterString,
+            @RequestParam(value = "filter", required = false, defaultValue = "") String filterString,
             @RequestParam(value = "sort", required = false) String sortString,
-            @RequestParam(value = "pagination", required = false) String paginationString
+            @RequestParam(value = "pagination", required = false, defaultValue = "{\"page\":1,\"perPage\":10}") String paginationString
     ) {
 
         List<AxSignalTaskDTO> data = new ArrayList<AxSignalTaskDTO>();

@@ -70,7 +70,7 @@ public class AxSignalTaskRepository {
 
     public Page<AxSignalTask> findAll(Pageable p) {
         String order = p.getSort().get().map(item -> String.format("%s %s", item.getProperty(), item.getDirection() == Sort.Direction.DESC ? "DESC" : "ASC")).collect(Collectors.joining(","));
-        if (order.trim().isEmpty()) order = "ORDER BY "+order;
+        if (!order.trim().isEmpty()) order = "ORDER BY "+order;
         String limit = String.format("LIMIT %d, %d", p.getOffset(), p.getPageSize());
         Page<AxSignalTask> res = new PageImpl(jdbcTemplate.query("SELECT * FROM ax_signal "+order+" "+limit, new AxSignalTask.Mapper()), p, getTotal(p));
         return res;
