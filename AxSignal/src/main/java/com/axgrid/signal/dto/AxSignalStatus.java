@@ -3,6 +3,7 @@ package com.axgrid.signal.dto;
 public enum AxSignalStatus {
     NotFound(0),
     InQueue(1),
+    Continue(2),
     Done(10),
     Error(500);
 

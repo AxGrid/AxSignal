@@ -31,6 +31,12 @@ public class AxSignalExecutorService implements HealthIndicator {
         this.listeners = listeners.stream().collect(Collectors.groupingBy(IAxSignalListener::getChannel));
     }
 
+    public AxSignalStatus getStatus(String channel, String trx) {
+        var res = repository.getTaskStatus(channel,trx);
+        if (res == null) return AxSignalStatus.NotFound;
+        else return res.getStatus();
+    }
+
     @PostConstruct
     @Scheduled(fixedDelay = 400)
     public void execute() {
@@ -48,6 +54,15 @@ public class AxSignalExecutorService implements HealthIndicator {
                     if (status == AxSignalStatus.Error) {
                         task.setStatus(AxSignalStatus.Error);
                         errors = true;
+                    }
+                    if (status == AxSignalStatus.Continue) {
+                        task.setStatus(AxSignalStatus.InQueue);
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(new Date());
+                        cal.add(Calendar.MINUTE, 1);
+                        task.setCreateTime(cal.getTime());
+                        task.setDoneTime(null);
                     }
                 }
             } catch (Exception e) {
