@@ -1,15 +1,18 @@
 package com.axgrid.signal;
 
+import com.axgrid.signal.dto.AxSignal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestSignal implements Serializable {
+public class TestSignal implements AxSignal {
+    String uuid;
+    long time;
     String name;
     int id;
+
 }

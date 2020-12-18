@@ -1,7 +1,5 @@
 package com.axgrid.signal;
 
-import com.axgrid.signal.dto.AxSignalTask;
-import com.axgrid.signal.service.AxSignalExecutorService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,6 +11,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
+import java.util.UUID;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest()
 @Import(TestApplication.class)
@@ -22,17 +23,27 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SignalTest {
 
     @Autowired
-    TestSignalService signalService;
+    TestSignalService testSignalService;
 
-    @Autowired
-    AxSignalExecutorService executorService;
 
     @Test
     public void send() throws Exception {
-        executorService.add("my-test-channel", new TestSignal("test-name", 5));
-        Thread.sleep(1100);
-        Assert.assertNotNull(signalService.getLastSignal());
-        Assert.assertEquals(signalService.getLastSignal().getName(), "test-name");
-        Assert.assertEquals(signalService.getLastSignal().getId(), 5);
+        testSignalService.clear();
+        testSignalService.add(new TestSignal(
+                UUID.randomUUID().toString(),
+                new Date().getTime(),
+                "test",
+                5
+        ));
+        TestSignal t = testSignalService.peek();
+        Assert.assertNotNull(t);
+        Assert.assertEquals(testSignalService.size(), 1);
+        Assert.assertEquals(t.getName(), "test");
+        t = testSignalService.poll();
+        Assert.assertEquals(testSignalService.size(), 0);
+        Assert.assertNotNull(t);
+        Assert.assertEquals(t.getName(), "test");
+        t = testSignalService.poll();
+        Assert.assertNull(t);
     }
 }
