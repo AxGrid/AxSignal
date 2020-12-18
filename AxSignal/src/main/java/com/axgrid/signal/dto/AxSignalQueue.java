@@ -1,5 +1,7 @@
 package com.axgrid.signal.dto;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,7 +10,7 @@ public class AxSignalQueue<T extends AxSignal> extends ArrayList<T> implements Q
     @Override
     public boolean add(T t) {
         var res = super.add(t);
-        this.sort((a,b) -> (int) (a.getTime() - b.getTime()));
+        super.sort(Comparator.comparingLong(AxSignal::getTime));
         return res;
     }
 
@@ -47,8 +49,9 @@ public class AxSignalQueue<T extends AxSignal> extends ArrayList<T> implements Q
     }
 
     public T peekTime() {
+        var date = new Date().getTime();
         T el = this.peek();
-        if (el != null && el.getTime() <= new Date().getTime())
+        if (el != null && el.getTime() <= date)
             return el;
         return null;
     }
