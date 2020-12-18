@@ -79,7 +79,7 @@ public abstract class AxSignalService<T extends AxSignal> implements Queue<T>, H
 
     @Override
     public T poll() {
-        T item = queue.poolTime();
+        T item = queue.pollTime();
         if (item != null)
             storage.done(item);
         return item;

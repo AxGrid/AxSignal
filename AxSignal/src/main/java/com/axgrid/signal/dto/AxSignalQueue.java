@@ -26,9 +26,12 @@ public class AxSignalQueue<T extends AxSignal> extends ArrayList<T> implements Q
 
     @Override
     public T poll() {
-        T el = this.get(0);
-        this.remove(el);
-        return el;
+        if (this.size() > 0) {
+            T el = this.get(0);
+            this.remove(el);
+            return el;
+        }
+        return null;
     }
 
     @Override
@@ -38,10 +41,12 @@ public class AxSignalQueue<T extends AxSignal> extends ArrayList<T> implements Q
 
     @Override
     public T peek() {
-        return this.get(0);
+        if (this.size() > 0)
+            return this.get(0);
+        return null;
     }
 
-    public T poolTime() {
+    public T pollTime() {
         T el = this.peek();
         if (el != null && el.getTime() <= new Date().getTime())
             return this.poll();

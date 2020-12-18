@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.xml.crypto.Data;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,7 +25,7 @@ public class QueueTest {
         Assert.assertEquals(signals.sizeTime(), 2);
 
         Assert.assertEquals(signals.peekTime().getName(), "old");
-        Assert.assertEquals(signals.poolTime().getName(), "old");
-        Assert.assertEquals(signals.poolTime().getName(), "now");
+        Assert.assertEquals(signals.pollTime().getName(), "old");
+        Assert.assertEquals(signals.pollTime().getName(), "now");
     }
 }
