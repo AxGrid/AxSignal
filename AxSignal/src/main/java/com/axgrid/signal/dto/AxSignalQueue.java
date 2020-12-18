@@ -39,6 +39,12 @@ public class AxSignalQueue<T extends AxSignal> extends ArrayList<T> implements Q
         return this.peek();
     }
 
+    public T poll(T item) {
+        if (!this.contains(item)) return null;
+        this.remove(item);
+        return item;
+    }
+
     @Override
     public T peek() {
         if (this.size() > 0)

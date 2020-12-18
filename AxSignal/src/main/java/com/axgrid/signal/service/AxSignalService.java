@@ -90,6 +90,13 @@ public abstract class AxSignalService<T extends AxSignal> implements Queue<T>, H
         return peek();
     }
 
+    public T poll(T el) {
+        T item = queue.poll(el);
+        if (item != null)
+            storage.done(item);
+        return item;
+    }
+
     @Override
     public T peek() {
         T item = queue.peekTime();
